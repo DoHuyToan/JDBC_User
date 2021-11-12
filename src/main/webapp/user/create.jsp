@@ -12,7 +12,6 @@
 </head>
 <body>
 <h1>USER MANAGEMENT</h1>
-<h2> <a href="/users?action=users">LIST ALL USERS</a> </h2>
 <center>
     <div align="center">
         <form method="post">
@@ -45,5 +44,6 @@
         </form>
     </div>
 </center>
+<h2 style="text-align: center"> <a href="/users?action=users">LIST ALL USERS</a> </h2>
 </body>
 </html>

@@ -17,6 +17,8 @@ public class UserDao implements IUserDao {
     private static final String SELECT_ALL_USERS = "select * from users";
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
+    private static final String SELECT_USERS_BY_COUNTRY = "SELECT * FROM users WHERE country =?";
+    private static final String SORT_USERS ="SELECT * FROM users ORDER BY name";
 
     public UserDao() {
     }
@@ -164,4 +166,45 @@ public class UserDao implements IUserDao {
             }
         }
     }
+
+    public List<User> selectUserByCountry(String country) {
+        List<User> users = new ArrayList<>();
+        try (Connection connection = getConection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USERS_BY_COUNTRY);){
+            //set giá trị cho từng dấu ?
+            preparedStatement.setString(1, country);
+            //trả về 1 bảng sau khi thực hiện câu lệnh query
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                users.add(new User(id, name, email, country));
+            }
+
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return users;
+    }
+
+    public List<User> sortListUserByCountry(){
+        List<User> users = new ArrayList<>();
+        Connection connection = getConection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SORT_USERS);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String country = rs.getString("country");
+                users.add(new User(id, name, email, country));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
 }

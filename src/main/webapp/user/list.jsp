@@ -15,6 +15,7 @@
 <center>
     <h1>USER MANAGEMENT</h1>
     <h2> <a href="/users?action=create">ADD NEW USER</a> </h2>
+    <h2> <a href="/users?action=find">FIND USER BY COUNTRY</a> </h2>
 </center>
 <div align="center">
     <table border="1" cellpadding="5">

@@ -38,12 +38,36 @@ public class UserServlet extends HttpServlet {
                 case "delete":
                     deleteUser(request, response);
                     break;
+                case "find":
+                    showFindByCountry(request, response);
+                    break;
+                case "sort":
+                    sortListUser(request, response);
+                    break;
                 default:
                     listUser(request, response);
                     break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
+        }
+    }
+
+    private void sortListUser(HttpServletRequest request, HttpServletResponse response) {
+        List<User> users = userDao.sortListUserByCountry();
+        RequestDispatcher dispatcher;
+        if(users == null){
+            dispatcher = request.getRequestDispatcher("error-404");
+        } else {
+            request.setAttribute("users", users);
+            dispatcher = request.getRequestDispatcher("user/list.jsp");
+        }
+        try {
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -62,11 +86,15 @@ public class UserServlet extends HttpServlet {
                 case "edit":
                     updateUser(request, response);
                     break;
+                case "find":
+                    findByCountry(request, response);
+                    break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
         }
     }
+
 
     private void listUser(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -124,4 +152,33 @@ public class UserServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+    private void showFindByCountry(HttpServletRequest request, HttpServletResponse response) {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/find.jsp");
+        try {
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void findByCountry(HttpServletRequest request, HttpServletResponse response) {
+        String country = request.getParameter("country");
+        List<User> users = userDao.selectUserByCountry(country);
+        RequestDispatcher dispatcher;
+        if (users == null){
+            dispatcher = request.getRequestDispatcher("error-40");
+        } else {
+            request.setAttribute("users", users);
+            dispatcher = request.getRequestDispatcher("user/find.jsp");
+        }
+        try {
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
